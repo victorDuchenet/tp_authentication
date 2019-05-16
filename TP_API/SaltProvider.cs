@@ -5,12 +5,20 @@ namespace TP_API
 {
     public class SaltProvider : ISaltProvider
     {
-        public const int SaltByteSize = 24;
+        private IRandom _randomProvider;
+        private ITimestamp _timestampProvider;
+
+        public SaltProvider(IRandom rnd, ITimestamp tstmp)
+        {
+            _randomProvider = rnd;
+            _timestampProvider = tstmp;
+        }
+
         public byte[] GetSalt()
         {
-            var rndNb = new Random().Next().ToString();
+            var rndNb = _randomProvider.GetRandomValue().ToString();
+            var timestamp = _timestampProvider.GetCurrentTimestamp();
 
-            var timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds().ToString();
             var salt = string.Concat(rndNb, timestamp);
 
             return Encoding.UTF8.GetBytes(salt);

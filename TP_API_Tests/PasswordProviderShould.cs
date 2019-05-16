@@ -9,16 +9,17 @@ namespace TP_API_Tests
     [TestFixture]
     public class PasswordProviderShould
     {
-        private string aSalt = "MTM1MDk5OTgwMzE1NTgwMTQxMjI4ODc=";
         private string aPassword = "monmdp";
-        private string aPasswordHash = "HxCyv8PoIteRcB8rpbda0ak1IlyK/DEfl6qM+/k0gyM=";
+        private string aPasswordHash = "XgHExFshcNqeqkoYPwJVSgJiY8va+WrAZo1mEIBaniU=";
 
         [Test]
         public void ReturnEvenHash()
         {
             // Arrange
             var provider = new PasswordProvider();
-            var salt = Convert.FromBase64String(aSalt);
+
+            var saltProvider = new SaltProvider(new FakeRandomProvider(), new FakeTimestampProvider());
+            var salt = saltProvider.GetSalt();
 
             // Act
             var passwordHashResult = provider.PasswordHash(aPassword, salt);
